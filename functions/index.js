@@ -17,18 +17,17 @@
 // Actions on Google client library.
 const { dialogflow, Permission, Suggestions } = require("actions-on-google");
 
-const axios = require("axios").default;
-const uri =
-  "mongodb+srv://uday:uday@cluster0.kzz83.gcp.mongodb.net/inputpain?retryWrites=true&w=majority";
+const axios = require("axios");
 
-var MongoClient = require("mongodb").MongoClient;
+const express = require("express");
 
 // Import the firebase-functions package for deployment.
 const functions = require("firebase-functions");
 
 // Instantiate the Dialogflow client.
-const app = dialogflow({ debug: true });
+// const app = dialogflow({ debug: true });
 
+const app = express();
 // Handle the Dialogflow intent named 'favorite color'.
 // The intent collects a parameter named 'color'
 app.intent("favorite color", (conv, { color }) => {
@@ -44,10 +43,19 @@ app.intent("favorite color", (conv, { color }) => {
     );
   } else {
     conv.close(
-      `<speak>Your lucky number is ${luckyNumber}.` +
+      `<speak>Your lucky is not number is ${luckyNumber}.` +
         `<audio src="${audioSound}"></audio></speak>`
     );
   }
+});
+
+app.intent("Default Welcome Intent", (conv) => {
+  conv.ask(
+    "Would you like to rate your pain level today?Hear your pain rating from yesterday? Hear a pain report? Or set up reminders?"
+  );
+  conv.ask(
+    new Suggestions("rate my pain", "hear my pain rating", "pain report")
+  );
 });
 
 //Hande the DialogFlow intent named 'Rate Pain Level - custom'.
@@ -60,7 +68,7 @@ app.intent("Rate Pain Level - custom", (conv, { number }) => {
       `Your pain is rated as number ${number} - to input your goals say todays goals, to hear a pain report say listen to pain report or say stop`
     );
     axios
-      .post("", {
+      .post("https://painmonitoring.herokuapp.com/save", {
         painlevel: number,
       })
       .then(function (response) {
@@ -74,7 +82,7 @@ app.intent("Rate Pain Level - custom", (conv, { number }) => {
 
 //Handlethe DialogFlow intent named 'Exit conversation'.
 app.intent("Exit conversation", (conv) => {
-  conv.close(`<speak>Okay, talk to you next time!</speak>`);
+  conv.close("Okay, talk to you next time!");
 });
 
 // Handle the Dialogflow intent named 'Default Welcome Intent'.
@@ -86,9 +94,23 @@ app.intent("Exit conversation", (conv) => {
 // });
 
 //Handle the DialogFLow intent named 'Rate Pain Level'.
-// Array.intent("Rate Pain Level", (conv) => {
-//   conv.ask("");
-// });
+app.intent("Rate Pain Level", (conv) => {
+  conv.ask(
+    "Rate your pain between 1 and 10 with 10 being the highest and 1 being the lowest. or say i dont feel any pain today"
+  );
+  conv.ask(new Suggestions("1", "5", "9"));
+});
+
+app.intent("Listen to report", (conv) => {
+  conv.ask(
+    "Your average pain level last week was $number, your average pain level last month was 2. You are improving!!! "
+  );
+  conv.ask(
+    "To listen to your pain rating from yesterday say, 'listen to rating', to record pain say 'rate my pain'. To exit say 'google stop'"
+  );
+});
 
 // Set the DialogflowApp object to handle the HTTPS POST request.
-exports.dialogflowFirebaseFulfillment = functions.https.onRequest(app);
+// exports.dialogflowFirebaseFulfillment = functions.https.onRequest(app);
+
+exports.app = functions.https.onRequest(app);

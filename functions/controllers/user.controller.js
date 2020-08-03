@@ -1,13 +1,42 @@
 const express = require("express");
-
+const path = require("path");
 const router = express.Router();
 
 const User = require("../models/user");
 
+const sgEmail = require("@sendgrid/mail");
+sgEmail.setApiKey(
+  "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"
+);
+
+router.get("/", (req, res) => {
+  res.status(200);
+  res.sendFile(path.join(__dirname, "../html", "index.html"));
+});
+
+router.post("/", (req, res) => {
+  const { name, email, message } = req.body;
+  console.log(name, email, message);
+  const msg = {
+    to: "u.garg14@gmail.com",
+    from: `${email}`,
+    subject: name,
+    text: `${message}`,
+  };
+
+  sgEmail.send(msg).catch((err) => {
+    console.log("failed send email", err);
+  });
+});
+
+router.get("/background", (req, res) => {
+  res.status(200);
+  res.sendFile(path.join(__dirname, "../html", "background.html"));
+});
+
 router.post("/save", (req, res) => {
-  console.log("api hit");
   const user = new User({
-    painlevel: req.body.painlevel,
+    painlevel: req.body.painlevel, //check this
   });
 
   user

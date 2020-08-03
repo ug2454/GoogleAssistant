@@ -1,13 +1,26 @@
 const mongoose = require("mongoose");
-
-var userSchema = new mongoose.Schema(
+const crypto = require("crypto");
+const { strict } = require("assert");
+// user schema
+const userSchema = new mongoose.Schema(
   {
-    painlevel: {
+    email: {
       type: String,
+      trim: true,
+      required: true,
+      unique: true,
+      lowercase: true,
+    },
+    name: {
+      type: String,
+      trim: true,
+      required: true,
     },
   },
-  { timestamps: true }
+
+  {
+    timestamps: true,
+  }
 );
 
-const User = mongoose.model("painlevels", userSchema);
-module.exports = User;
+module.exports = mongoose.model("User", userSchema);

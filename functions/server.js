@@ -8,6 +8,10 @@ require("dotenv").config({
 });
 
 const app = express();
+//including static files
+app.use(express.static("html"));
+// app.use(express.static("css"));
+// app.use(express.static("images"));
 
 /*CONNECTION TO DB*/
 connectDB();
@@ -15,6 +19,7 @@ connectDB();
 /*BODY PARSER MIDDLEWARE*/
 
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 /*SERVER PORT*/
 

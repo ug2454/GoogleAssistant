@@ -8,9 +8,9 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "serve": "firebase serve --only functions",
+    "serve": "firebase emulators:start --only functions",
     "shell": "firebase experimental:functions:shell",
-    "start": "node server.js",
+    "start": "nodemon server.js",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log"
   },
@@ -29,5 +29,9 @@
   "devDependencies": {
     "eslint": "^4.19.0",
     "eslint-config-google": "^0.9.1"
-  }
+  },
+  "version": "1.0.0",
+  "main": "index.js",
+  "keywords": [],
+  "license": "ISC"
 }
