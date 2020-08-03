@@ -111,6 +111,6 @@ app.intent("Listen to report", (conv) => {
 });
 
 // Set the DialogflowApp object to handle the HTTPS POST request.
-// exports.dialogflowFirebaseFulfillment = functions.https.onRequest(app);
+exports.dialogflowFirebaseFulfillment = functions.https.onRequest(app);
 
-exports.app = functions.https.onRequest(app);
+// exports.app = functions.https.onRequest(app);
