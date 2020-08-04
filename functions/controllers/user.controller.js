@@ -6,7 +6,7 @@ const User = require("../models/user");
 
 const sgEmail = require("@sendgrid/mail");
 sgEmail.setApiKey(
-  "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"
+  "sendgrid_api_key"
 );
 
 router.get("/", (req, res) => {
